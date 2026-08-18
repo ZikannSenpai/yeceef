@@ -519,7 +519,6 @@ export default function MargaClient() {
                         </table>
                     </div>  
                  </div>  
-                </div>  
             </section>
 
             <section id="stats" className="reveal mx-auto max-w-6xl px-4 py-14">
