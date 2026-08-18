@@ -238,13 +238,14 @@ export default function MargaClient() {
                     <h1 className="comic-title max-w-3xl text-5xl font-black leading-[.92] sm:text-7xl">
                         MARGA
                         <br />
-                        <span className="text-cyan-300">YECE</span> FAMILY.
+                        <span className="text-cyan-300">
+                            YUZAKI CREATOR
+                        </span>{" "}
+                        FAMILY.
                     </h1>
 
                     <p className="mt-6 max-w-xl text-sm leading-7 text-slate-400">
-                        Komunitas anime TikTok dengan sistem generasi, data
-                        anggota, ranking penonton, dan statistik tagar Marga
-                        Yece Family.
+                        deskripsinya tanya deni🗿
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">
@@ -307,28 +308,28 @@ export default function MargaClient() {
                 <div className="manga-panel screentone min-h-[320px] overflow-hidden rounded-2xl p-7 md:min-h-[410px]">
                     <div className="relative z-10 flex h-full flex-col justify-between">
                         <div className="flex justify-between text-[10px] font-bold tracking-[.3em] text-cyan-300">
-                            <span>YECE FILE 01</span>
-                            <span>EST. 2024</span>
+                            <span>YCF FILE 01</span>
+                            <span>EST. 2026</span>
                         </div>
 
                         <div>
                             <div className="mb-5 inline-block -rotate-3 border-2 border-cyan-300 px-3 py-1 text-xs font-black uppercase text-cyan-300">
-                                Marga Code
+                                Marga Anime
                             </div>
 
                             <p className="text-4xl font-black leading-none">
-                                YCE
+                                YCF
                                 <br />
                                 <span className="text-cyan-300">FMLY.</span>
                             </p>
 
                             <p className="mt-4 max-w-xs text-xs leading-6 text-slate-500">
-                                Anime creator • editor • viewer • member.
+                                Anime creator • editor • Designer • Programmer
                             </p>
                         </div>
 
                         <div className="flex items-end justify-between text-[10px] text-slate-500">
-                            <span>BLACK / BLUE ISSUE</span>
+                            <span> ZikaNyawDev </span>
                             <span>///</span>
                         </div>
                     </div>
