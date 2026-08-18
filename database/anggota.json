@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "nama": "Zikann",
+        "tiktok": "zikannsenpai",
+        "gen": 1,
+        "role": "Founder",
+        "status": "Aktif"
+    },
+    {
+        "id": 2,
+        "nama": "Yece Ryu",
+        "tiktok": "yecer.official",
+        "gen": 1,
+        "role": "Member",
+        "status": "Aktif"
+    }
+]

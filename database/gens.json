@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "title": "Yuzaki Creator • GEN 1",
+        "desc": "para sesepuh.",
+        "members": 2,
+        "status": "OPEN"
+    },
+    {
+        "id": 2,
+        "title": "Yuzaki Creator • GEN 2",
+        "desc": "CLOSE",
+        "members": 0,
+        "status": "CLOSE"
+    },
+    {
+        "id": 3,
+        "title": "Yuzaki Creator • GEN 3",
+        "desc": "CLOSE",
+        "members": 0,
+        "status": "CLOSE"
+    },
+    {
+        "id": 4,
+        "title": "Yuzaki Creator • GEN 4",
+        "desc": "CLOSE",
+        "members": 0,
+        "status": "CLOSE"
+    }
+]

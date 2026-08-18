@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Zikann",
+        "username": "@zikannsenpai",
+        "title": "Coder Admin",
+        "desc": "atmin pedeef.",
+        "avatar": ""
+    },
+    {
+        "name": "Yece Ryu",
+        "username": "@yecer.official",
+        "title": "CO-ADMIN",
+        "desc": "Fokus koordinasi anggota, konten, dan aktivitas TikTok marga.",
+        "avatar": "https://i.pravatar.cc/240?img=32"
+    },
+    {
+        "name": "Mika",
+        "username": "@mika.yece",
+        "title": "MEDIA ADMIN",
+        "desc": "Ngurus visual, archive konten, dan highlight anime marga.",
+        "avatar": "https://i.pravatar.cc/240?img=47"
+    }
+]
