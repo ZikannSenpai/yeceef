@@ -1,6 +1,14 @@
 [
     {
         "id": 1,
+        "nama": "Yuzaki Creator Family",
+        "tiktok": "yuzakicreatorfamily",
+        "gen": 1,
+        "role": "Official Account",
+        "status": "Aktif"
+    },
+    {
+        "id": 2,
         "nama": "Reyy",
         "tiktok": "reyyxprst",
         "gen": 1,
@@ -8,11 +16,19 @@
         "status": "Aktif"
     },
     {
-        "id": 2,
-        "nama": "Deni",
-        "tiktok": "yuzakicreatorfamily",
+        "id": 3,
+        "nama": "Den",
+        "tiktok": "dennzprst0",
         "gen": 1,
         "role": "Founder",
+        "status": "Aktif"
+    },
+    {
+        "id": 4,
+        "nama": "Engz mpruy",
+        "tiktok": "youknow_eng",
+        "gen": 1,
+        "role": "member",
         "status": "Aktif"
     }
 ]
