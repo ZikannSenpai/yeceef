@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
     title: "Yuzaki Creator Family | OFC",
     description: "nyusul.",
-    icons: { icon: "/favicon.svg" }
+    icons: { icon: "../public/favicon.svg" }
 };
 
 export default function RootLayout({

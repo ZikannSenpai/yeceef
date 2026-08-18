@@ -446,7 +446,8 @@ export default function MargaClient() {
                                     <th className="px-5 py-4">Status</th>  
                                 </tr>  
                             </thead>  
-  
+                            
+                             <div className="max-h-[360px] overflow-y-auto">
                             <tbody>  
                                 {anggota.length > 0 ? (  
                                     anggota.map((member, i) => (  
@@ -516,6 +517,7 @@ export default function MargaClient() {
                                 )}  
                             </tbody>  
                         </table>  
+                    </div>  
                     </div>  
                 </div>  
             </section>  
