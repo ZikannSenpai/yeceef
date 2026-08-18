@@ -611,18 +611,12 @@ export default function MargaClient() {
                             </p>
 
                             <p className="mt-1 text-xs text-slate-500">
-                                Daftar starter yang bisa dipakai creator marga.
+                                Daftar marga dengan tagar terbanyak.
                             </p>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                            {[
-                                "#margayecefamily",
-                                "#ycefamily",
-                                "#margayeceanime",
-                                "#yeceanime",
-                                "#yeceedit"
-                            ].map(t => (
+                            {["#", "#", "#", "#", "#"].map(t => (
                                 <span
                                     key={t}
                                     className="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-3 py-1.5 text-xs font-bold text-cyan-200"
