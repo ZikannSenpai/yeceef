@@ -10,31 +10,58 @@ function cleanTag(input: string) {
         .replace(/[^a-z0-9_]/g, "");
 }
 
-function getStructure(value: any, depth = 0): any {
-    if (depth > 6) {
-        return "[max-depth]";
-    }
-
-    if (value === null) {
-        return "null";
-    }
+function findRelevant(value: any, path = "$", result: any[] = [], depth = 0) {
+    if (depth > 15 || result.length >= 100) return result;
 
     if (Array.isArray(value)) {
-        return {
-            type: "array",
-            length: value.length,
-            first: value.length > 0 ? getStructure(value[0], depth + 1) : null
-        };
+        value.forEach((item, index) => {
+            findRelevant(item, `${path}[${index}]`, result, depth + 1);
+        });
+
+        return result;
     }
 
-    if (typeof value !== "object") {
-        return typeof value;
+    if (!value || typeof value !== "object") {
+        return result;
     }
-
-    const result: Record<string, any> = {};
 
     for (const [key, val] of Object.entries(value)) {
-        result[key] = getStructure(val, depth + 1);
+        const lower = key.toLowerCase();
+
+        if (
+            lower.includes("challenge") ||
+            lower.includes("hashtag") ||
+            lower.includes("itemlist") ||
+            lower.includes("item_list") ||
+            lower.includes("video") ||
+            lower.includes("stats") ||
+            lower.includes("count") ||
+            lower.includes("view")
+        ) {
+            result.push({
+                path: `${path}.${key}`,
+                type: Array.isArray(val)
+                    ? "array"
+                    : val === null
+                    ? "null"
+                    : typeof val,
+                length: Array.isArray(val) ? val.length : undefined,
+                keys:
+                    val && typeof val === "object" && !Array.isArray(val)
+                        ? Object.keys(val).slice(0, 30)
+                        : undefined,
+                sample:
+                    typeof val === "string" ||
+                    typeof val === "number" ||
+                    typeof val === "boolean"
+                        ? val
+                        : undefined
+            });
+        }
+
+        findRelevant(val, `${path}.${key}`, result, depth + 1);
+
+        if (result.length >= 100) break;
     }
 
     return result;
@@ -43,31 +70,17 @@ function getStructure(value: any, depth = 0): any {
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
-    const tag = cleanTag(searchParams.get("tag") || "fyp");
-
-    if (!tag) {
-        return NextResponse.json(
-            {
-                ok: false,
-                error: "Tag kosong"
-            },
-            {
-                status: 400
-            }
-        );
-    }
+    const tag = cleanTag(searchParams.get("tag") || "margaycf");
 
     const url = `https://www.tiktok.com/tag/${encodeURIComponent(tag)}`;
 
     try {
         const res = await fetch(url, {
-            method: "GET",
-
             headers: {
                 "User-Agent":
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
 
-                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 
                 "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
 
@@ -79,92 +92,42 @@ export async function GET(req: Request) {
 
         const html = await res.text();
 
-        if (!res.ok) {
-            return NextResponse.json(
-                {
-                    ok: false,
-                    status: res.status,
-                    error: `TikTok HTTP ${res.status}`,
-                    htmlLength: html.length
-                },
-                {
-                    status: 200
-                }
-            );
-        }
-
         const match = html.match(
             /<script[^>]*id=["']__UNIVERSAL_DATA_FOR_REHYDRATION__["'][^>]*>([\s\S]*?)<\/script>/i
         );
 
         if (!match) {
-            return NextResponse.json(
-                {
-                    ok: false,
-                    error: "UNIVERSAL_DATA_FOR_REHYDRATION tidak ditemukan",
-
-                    htmlLength: html.length,
-
-                    scriptIds: [
-                        ...html.matchAll(/<script[^>]*id=["']([^"']+)["']/gi)
-                    ].map(m => m[1])
-                },
-                {
-                    status: 200
-                }
-            );
+            return NextResponse.json({
+                ok: false,
+                error: "Universal data tidak ditemukan",
+                htmlLength: html.length
+            });
         }
 
         let data: any;
 
         try {
             data = JSON.parse(match[1]);
-        } catch (error) {
-            return NextResponse.json(
-                {
-                    ok: false,
-                    error: "JSON TikTok gagal diparse",
-
-                    htmlLength: html.length,
-
-                    parseError:
-                        error instanceof Error ? error.message : "Unknown error"
-                },
-                {
-                    status: 200
-                }
-            );
+        } catch {
+            return NextResponse.json({
+                ok: false,
+                error: "Gagal parse JSON TikTok"
+            });
         }
 
-        return NextResponse.json(
-            {
-                ok: true,
+        const relevant = findRelevant(data);
 
-                tag,
-
-                htmlLength: html.length,
-
-                rootKeys:
-                    data && typeof data === "object" ? Object.keys(data) : [],
-
-                structure: getStructure(data)
-            },
-            {
-                status: 200
-            }
-        );
+        return NextResponse.json({
+            ok: true,
+            tag,
+            totalFound: relevant.length,
+            relevant
+        });
     } catch (error) {
-        return NextResponse.json(
-            {
-                ok: false,
-
-                tag,
-
-                error: error instanceof Error ? error.message : "Unknown error"
-            },
-            {
-                status: 200
-            }
-        );
+        return NextResponse.json({
+            ok: false,
+            tag,
+            error: error instanceof Error ? error.message : "Unknown error"
+        });
     }
 }
