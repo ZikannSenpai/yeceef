@@ -515,9 +515,8 @@ export default function MargaClient() {
                                         </td>  
                                     </tr>  
                                 )}  
-                            </tbody>  
-                        </table>  
-                    </div>  
+                            </tbody>
+                        </table>
                     </div>  
                 </div>  
             </section>  
