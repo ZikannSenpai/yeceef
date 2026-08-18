@@ -429,7 +429,7 @@ export default function MargaClient() {
                 </div>  
   
                 <div className="manga-panel overflow-hidden rounded-2xl">  
-                    <div className="overflow-x-auto">  
+                    <div className="max-h-[360px] overflow-x-auto overflow-y-auto">  
                         <table className="w-full min-w-[700px] text-left">  
                             <thead className="border-b border-cyan-300/10 bg-cyan-300/5">  
                                 <tr className="text-[10px] uppercase tracking-widest text-cyan-300">  
@@ -447,7 +447,7 @@ export default function MargaClient() {
                                 </tr>  
                             </thead>  
                             
-                             <div className="max-h-[360px] overflow-y-auto">
+                            
                             <tbody>  
                                 {anggota.length > 0 ? (  
                                     anggota.map((member, i) => (  
@@ -518,8 +518,9 @@ export default function MargaClient() {
                             </tbody>
                         </table>
                     </div>  
+                 </div>  
                 </div>  
-            </section>  
+            </section>
 
             <section id="stats" className="reveal mx-auto max-w-6xl px-4 py-14">
                 <div className="mb-6">
