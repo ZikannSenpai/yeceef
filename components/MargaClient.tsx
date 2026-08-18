@@ -424,7 +424,7 @@ export default function MargaClient() {
                                     </a>
 
                                     <a
-                                        href="#join"
+                                        href="https://chat.whatsapp.com/G8A2tRpJ1UdF95WWFX0ujV?s=cl&p=a&ilr=0"
                                         className="sketch-btn rounded-xl bg-transparent px-4 py-3 text-xs font-black"
                                     >
                                         BERGABUNG
