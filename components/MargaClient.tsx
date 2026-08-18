@@ -43,37 +43,9 @@ const FALLBACK_VIDEOS = [
     {
         id: "1",
         views: 182000,
-        desc: "Yece Family • anime edit",
-        cover: "https://picsum.photos/seed/yece1/640/960",
-        url: "https://www.tiktok.com/tag/margayecefamily"
-    },
-    {
-        id: "2",
-        views: 141000,
-        desc: "Marga Yece • anime transition",
-        cover: "https://picsum.photos/seed/yece2/640/960",
-        url: "https://www.tiktok.com/tag/margayecefamily"
-    },
-    {
-        id: "3",
-        views: 99000,
-        desc: "Yece anime moment",
-        cover: "https://picsum.photos/seed/yece3/640/960",
-        url: "https://www.tiktok.com/tag/margayecefamily"
-    },
-    {
-        id: "4",
-        views: 76000,
-        desc: "Gen 3 • Marga Yece",
-        cover: "https://picsum.photos/seed/yece4/640/960",
-        url: "https://www.tiktok.com/tag/margayecefamily"
-    },
-    {
-        id: "5",
-        views: 52000,
-        desc: "Marga Yece anime archive",
-        cover: "https://picsum.photos/seed/yece5/640/960",
-        url: "https://www.tiktok.com/tag/margayecefamily"
+        desc: "reyy prengset",
+        cover: "https://cdn.discordapp.com/attachments/1435475294852091966/1539185702221385748/IMG-20260814-WA0010.jpg?ex=6a8565e4&is=6a841464&hm=72ca9cdea5bc64e0f4f32f3a115dcb92ca9ffff6e0150e025033050fedaf0a78&",
+        url: "https://www.tiktok.com/reyyxprst"
     }
 ];
 
