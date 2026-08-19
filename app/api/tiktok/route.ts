@@ -27,7 +27,26 @@ export async function GET(req: NextRequest) {
             cache: "no-store"
         });
 
-        const data = await res.json();
+        const text = await res.text();
+
+        let data: any;
+
+        try {
+            data = JSON.parse(text);
+        } catch {
+            const match = text.match(
+                /<script[^>]+id="SIGI_STATE"[^>]*>([\s\S]*?)<\/script>/
+            );
+
+            if (!match) {
+                return NextResponse.json({
+                    ok: false,
+                    error: "TikTok mengembalikan HTML dan data hashtag tidak ditemukan"
+                });
+            }
+
+            data = JSON.parse(match[1]);
+        }
 
         if (!data?.challengeInfo) {
             return NextResponse.json({
