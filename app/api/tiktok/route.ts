@@ -31,6 +31,7 @@ function walk(value: any, callback: (obj: Record<string, any>) => void) {
         for (const item of value) {
             walk(item, callback);
         }
+
         return;
     }
 
@@ -41,124 +42,39 @@ function walk(value: any, callback: (obj: Record<string, any>) => void) {
     }
 }
 
-function toNumber(value: any): number | null {
-    if (value === undefined || value === null) {
-        return null;
+function simplify(value: any, depth = 0): any {
+    if (depth > 4) {
+        return "[MAX_DEPTH]";
     }
 
-    if (typeof value === "number") {
-        return Number.isFinite(value) ? value : null;
-    }
-
-    if (typeof value !== "string") {
-        return null;
-    }
-
-    const text = value.trim().toLowerCase();
-
-    if (!text) return null;
-
-    const clean = text.replace(/,/g, "");
-
-    const direct = Number(clean);
-
-    if (Number.isFinite(direct)) {
-        return direct;
-    }
-
-    const match = clean.match(/^([\d.]+)\s*(k|m|b|t)?$/);
-
-    if (!match) return null;
-
-    const num = Number(match[1]);
-    const suffix = match[2];
-
-    if (!Number.isFinite(num)) return null;
-
-    const multiplier =
-        suffix === "k"
-            ? 1_000
-            : suffix === "m"
-            ? 1_000_000
-            : suffix === "b"
-            ? 1_000_000_000
-            : suffix === "t"
-            ? 1_000_000_000_000
-            : 1;
-
-    return num * multiplier;
-}
-
-function findStats(data: any) {
-    let totalVideos: number | null = null;
-    let totalViews: number | null = null;
-
-    walk(data, obj => {
-        /*
-         * Bentuk umum:
-         *
-         * {
-         *   stats: {
-         *      videoCount: 123,
-         *      viewCount: 456
-         *   }
-         * }
-         */
-
-        const stats = obj.stats || obj.challengeStats || obj.statsInfo;
-
-        if (stats && typeof stats === "object") {
-            const videos = toNumber(
-                stats.videoCount ??
-                    stats.video_count ??
-                    stats.videoNum ??
-                    stats.video_num ??
-                    stats.videoNumber
-            );
-
-            const views = toNumber(
-                stats.viewCount ??
-                    stats.view_count ??
-                    stats.viewNum ??
-                    stats.view_num ??
-                    stats.viewNumber
-            );
-
-            if (videos !== null && videos > 0 && totalVideos === null) {
-                totalVideos = videos;
-            }
-
-            if (views !== null && views > 0 && totalViews === null) {
-                totalViews = views;
-            }
+    if (
+        value === null ||
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+    ) {
+        if (typeof value === "string" && value.length > 500) {
+            return value.slice(0, 500) + "...";
         }
 
-        /*
-         * Beberapa response TikTok langsung
-         * naro field di object.
-         */
+        return value;
+    }
 
-        const videos = toNumber(
-            obj.videoCount ?? obj.video_count ?? obj.videoNum ?? obj.video_num
-        );
+    if (Array.isArray(value)) {
+        return value.slice(0, 10).map(item => simplify(item, depth + 1));
+    }
 
-        const views = toNumber(
-            obj.viewCount ?? obj.view_count ?? obj.viewNum ?? obj.view_num
-        );
+    if (typeof value === "object") {
+        const result: Record<string, any> = {};
 
-        if (videos !== null && videos > 0 && totalVideos === null) {
-            totalVideos = videos;
+        for (const [key, val] of Object.entries(value)) {
+            result[key] = simplify(val, depth + 1);
         }
 
-        if (views !== null && views > 0 && totalViews === null) {
-            totalViews = views;
-        }
-    });
+        return result;
+    }
 
-    return {
-        totalVideos: totalVideos ?? 0,
-        totalViews: totalViews ?? 0
-    };
+    return String(value);
 }
 
 export async function GET(req: NextRequest) {
@@ -173,7 +89,9 @@ export async function GET(req: NextRequest) {
                     ok: false,
                     error: "Parameter tag wajib diisi"
                 },
-                { status: 400 }
+                {
+                    status: 400
+                }
             );
         }
 
@@ -185,7 +103,9 @@ export async function GET(req: NextRequest) {
                     ok: false,
                     error: "Hashtag tidak valid"
                 },
-                { status: 400 }
+                {
+                    status: 400
+                }
             );
         }
 
@@ -221,7 +141,7 @@ export async function GET(req: NextRequest) {
 
         const html = await response.text();
 
-        const scripts = [
+        const scriptIds = [
             "SIGI_STATE",
             "__UNIVERSAL_DATA_FOR_REHYDRATION__",
             "__NEXT_DATA__"
@@ -230,7 +150,7 @@ export async function GET(req: NextRequest) {
         let data: any = null;
         let source: string | null = null;
 
-        for (const id of scripts) {
+        for (const id of scriptIds) {
             const parsed = parseScript(html, id);
 
             if (parsed) {
@@ -245,47 +165,32 @@ export async function GET(req: NextRequest) {
                 ok: false,
                 tag,
                 hashtag: `#${tag}`,
-                totalVideos: 0,
-                totalViews: 0,
                 source: null,
-                error: "JSON data TikTok tidak ditemukan"
+                error: "JSON TikTok tidak ditemukan"
             });
         }
-
-        const stats = findStats(data);
-
-        return NextResponse.json({
-            ok: true,
-            tag,
-            hashtag: `#${tag}`,
-
-            totalVideos: stats.totalVideos,
-
-            totalViews: stats.totalViews,
-
-            source
-        });
 
         const candidates: any[] = [];
 
         walk(data, obj => {
             const keys = Object.keys(obj);
 
-            if (
-                keys.some(key =>
-                    /challenge|hashtag|video|view|stats/i.test(key)
-                )
-            ) {
-                candidates.push({
-                    keys,
-                    data: obj
-                });
-            }
+            const matched = keys.some(key =>
+                /challenge|hashtag|video|view|stats/i.test(key)
+            );
+
+            if (!matched) return;
+
+            candidates.push({
+                keys,
+                data: simplify(obj)
+            });
         });
 
         return NextResponse.json({
             ok: true,
             tag,
+            hashtag: `#${tag}`,
             source,
             candidates: candidates.slice(0, 100)
         });
