@@ -1,64 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const tag = req.nextUrl.searchParams.get("tag")?.replace("#", "");
+    try {
+        const tag = req.nextUrl.searchParams
+            .get("tag")
+            ?.replace(/^#/, "")
+            .trim();
 
-    if (!tag) {
-        return NextResponse.json({
-            ok: false,
-            error: "tag wajib diisi"
-        });
-    }
+        if (!tag) {
+            return NextResponse.json({
+                ok: false,
+                error: "tag wajib diisi"
+            });
+        }
 
-    const res = await fetch(
-        `https://www.tiktok.com/tag/${encodeURIComponent(tag)}`,
-        {
+        const url =
+            `https://m.tiktok.com/node/share/tag/${encodeURIComponent(tag)}` +
+            `?uniqueId=${encodeURIComponent(tag)}&appId=1233`;
+
+        const res = await fetch(url, {
             headers: {
                 "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36",
+                Accept: "application/json"
             },
             cache: "no-store"
+        });
+
+        const data = await res.json();
+
+        if (!data?.challengeInfo) {
+            return NextResponse.json({
+                ok: false,
+                tag,
+                error: "challengeInfo tidak ditemukan",
+                data
+            });
         }
-    );
 
-    const html = await res.text();
+        const info = data.challengeInfo;
 
-    const match =
-        html.match(
-            /<script[^>]+id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>([\s\S]*?)<\/script>/
-        ) ||
-        html.match(/<script[^>]+id="SIGI_STATE"[^>]*>([\s\S]*?)<\/script>/);
-
-    if (!match) {
+        return NextResponse.json({
+            ok: true,
+            tag,
+            hashtag: `#${tag}`,
+            totalVideos: info.stats?.videoCount ?? info.stats?.video_count ?? 0,
+            totalViews: info.stats?.viewCount ?? info.stats?.view_count ?? 0
+        });
+    } catch (error: any) {
         return NextResponse.json({
             ok: false,
-            error: "data TikTok tidak ditemukan"
+            error: error?.message || "Scrape gagal"
         });
     }
-
-    const data = JSON.parse(match[1]);
-
-    const result: Record<string, any> = {};
-
-    function scan(obj: any) {
-        if (!obj || typeof obj !== "object") return;
-
-        for (const [key, value] of Object.entries(obj)) {
-            if (
-                /videoCount|viewCount|video_count|view_count|stats/i.test(key)
-            ) {
-                result[key] = value;
-            }
-
-            scan(value);
-        }
-    }
-
-    scan(data);
-
-    return NextResponse.json({
-        ok: true,
-        tag,
-        data: result
-    });
 }
