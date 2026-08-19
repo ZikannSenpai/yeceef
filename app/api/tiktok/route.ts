@@ -265,6 +265,30 @@ export async function GET(req: NextRequest) {
 
             source
         });
+
+        const candidates: any[] = [];
+
+        walk(data, obj => {
+            const keys = Object.keys(obj);
+
+            if (
+                keys.some(key =>
+                    /challenge|hashtag|video|view|stats/i.test(key)
+                )
+            ) {
+                candidates.push({
+                    keys,
+                    data: obj
+                });
+            }
+        });
+
+        return NextResponse.json({
+            ok: true,
+            tag,
+            source,
+            candidates: candidates.slice(0, 100)
+        });
     } catch (error: any) {
         return NextResponse.json(
             {
