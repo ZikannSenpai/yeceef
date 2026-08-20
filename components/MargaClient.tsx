@@ -128,29 +128,6 @@ function Counter({ value }: { value: number }) {
 const headerScrollRef = useRef<HTMLDivElement>(null);
 const bodyScrollRef = useRef<HTMLDivElement>(null);
 
-useEffect(() => {
-    const header = headerScrollRef.current;
-    const body = bodyScrollRef.current;
-
-    if (!header || !body) return;
-
-    const syncHeader = () => {
-        header.scrollLeft = body.scrollLeft;
-    };
-
-    const syncBody = () => {
-        body.scrollLeft = header.scrollLeft;
-    };
-
-    body.addEventListener("scroll", syncHeader);
-    header.addEventListener("scroll", syncBody);
-
-    return () => {
-        body.removeEventListener("scroll", syncHeader);
-        header.removeEventListener("scroll", syncBody);
-    };
-}, []);
-
 export default function MargaClient() {
     useReveal();
 
@@ -455,105 +432,106 @@ export default function MargaClient() {
                 </div>
 
                 <div className="manga-panel overflow-hidden rounded-2xl">
-                    {/* HEADER */}
-                    <div
-                        ref={headerScrollRef}
-                        className="overflow-x-auto overflow-y-hidden"
-                    >
-                        <table className="w-full min-w-[700px] text-left">
-                            <thead className="border-b border-cyan-300/10 bg-cyan-300/5">
-                                <tr className="text-[10px] uppercase tracking-widest text-cyan-300">
-                                    <th className="px-5 py-4">#</th>
+                    <div className="overflow-x-auto">
+                        <div className="min-w-[700px]">
+                            <div className="max-h-[360px] overflow-y-auto">
+                                <table className="w-full text-left">
+                                    <thead className="sticky top-0 z-20 border-b border-cyan-300/10 bg-[#050b14]">
+                                        <tr className="text-[10px] uppercase tracking-widest text-cyan-300">
+                                            <th className="px-5 py-4">#</th>
 
-                                    <th className="px-5 py-4">Nama Member</th>
+                                            <th className="px-5 py-4">
+                                                Nama Member
+                                            </th>
 
-                                    <th className="px-5 py-4">Nama TikTok</th>
+                                            <th className="px-5 py-4">
+                                                Nama TikTok
+                                            </th>
 
-                                    <th className="px-5 py-4">Gen</th>
+                                            <th className="px-5 py-4">Gen</th>
 
-                                    <th className="px-5 py-4">Role</th>
+                                            <th className="px-5 py-4">Role</th>
 
-                                    <th className="px-5 py-4">Status</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-
-                    {/* BODY */}
-                    <div
-                        ref={bodyScrollRef}
-                        className="max-h-[360px] overflow-x-auto overflow-y-auto"
-                    >
-                        <table className="w-full min-w-[700px] text-left">
-                            <tbody>
-                                {anggota.length > 0 ? (
-                                    anggota.map((member, i) => (
-                                        <tr
-                                            key={member.id ?? i}
-                                            className="border-b border-white/5 transition hover:bg-cyan-300/5"
-                                        >
-                                            <td className="px-5 py-4 text-xs text-slate-500">
-                                                {String(i + 1).padStart(2, "0")}
-                                            </td>
-
-                                            <td className="px-5 py-4">
-                                                <p className="text-sm font-black">
-                                                    {member.nama}
-                                                </p>
-                                            </td>
-
-                                            <td className="px-5 py-4">
-                                                <a
-                                                    href={`https://www.tiktok.com/@${member.tiktok.replace(
-                                                        /^@/,
-                                                        ""
-                                                    )}`}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="text-xs text-cyan-300 hover:underline"
-                                                >
-                                                    @
-                                                    {member.tiktok.replace(
-                                                        /^@/,
-                                                        ""
-                                                    )}
-                                                </a>
-                                            </td>
-
-                                            <td className="px-5 py-4 text-xs">
-                                                GEN {member.gen}
-                                            </td>
-
-                                            <td className="px-5 py-4 text-xs text-slate-400">
-                                                {member.role}
-                                            </td>
-
-                                            <td className="px-5 py-4">
-                                                <span
-                                                    className={`rounded px-2 py-1 text-[9px] font-black ${
-                                                        member.status?.toLowerCase() ===
-                                                        "aktif"
-                                                            ? "bg-cyan-300/10 text-cyan-300"
-                                                            : "bg-red-500/10 text-red-400"
-                                                    }`}
-                                                >
-                                                    {member.status}
-                                                </span>
-                                            </td>
+                                            <th className="px-5 py-4">
+                                                Status
+                                            </th>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td
-                                            colSpan={6}
-                                            className="px-5 py-10 text-center text-xs text-slate-500"
-                                        >
-                                            Belum ada anggota.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                    </thead>
+
+                                    <tbody>
+                                        {anggota.length > 0 ? (
+                                            anggota.map((member, i) => (
+                                                <tr
+                                                    key={member.id ?? i}
+                                                    className="border-b border-white/5 transition hover:bg-cyan-300/5"
+                                                >
+                                                    <td className="px-5 py-4 text-xs text-slate-500">
+                                                        {String(i + 1).padStart(
+                                                            2,
+                                                            "0"
+                                                        )}
+                                                    </td>
+
+                                                    <td className="px-5 py-4">
+                                                        <p className="text-sm font-black">
+                                                            {member.nama}
+                                                        </p>
+                                                    </td>
+
+                                                    <td className="px-5 py-4">
+                                                        <a
+                                                            href={`https://www.tiktok.com/@${member.tiktok.replace(
+                                                                /^@/,
+                                                                ""
+                                                            )}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="text-xs text-cyan-300 hover:underline"
+                                                        >
+                                                            @
+                                                            {member.tiktok.replace(
+                                                                /^@/,
+                                                                ""
+                                                            )}
+                                                        </a>
+                                                    </td>
+
+                                                    <td className="px-5 py-4 text-xs">
+                                                        GEN {member.gen}
+                                                    </td>
+
+                                                    <td className="px-5 py-4 text-xs text-slate-400">
+                                                        {member.role}
+                                                    </td>
+
+                                                    <td className="px-5 py-4">
+                                                        <span
+                                                            className={`rounded px-2 py-1 text-[9px] font-black ${
+                                                                member.status?.toLowerCase() ===
+                                                                "aktif"
+                                                                    ? "bg-cyan-300/10 text-cyan-300"
+                                                                    : "bg-red-500/10 text-red-400"
+                                                            }`}
+                                                        >
+                                                            {member.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan={6}
+                                                    className="px-5 py-10 text-center text-xs text-slate-500"
+                                                >
+                                                    Belum ada anggota.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
