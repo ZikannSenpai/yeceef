@@ -125,9 +125,6 @@ function Counter({ value }: { value: number }) {
     return <span>{new Intl.NumberFormat("id-ID").format(value)}</span>;
 }
 
-const headerScrollRef = useRef<HTMLDivElement>(null);
-const bodyScrollRef = useRef<HTMLDivElement>(null);
-
 export default function MargaClient() {
     useReveal();
 
